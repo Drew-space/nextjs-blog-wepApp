@@ -1,10 +1,34 @@
-export default function Home() {
+import { prisma } from "./utils/db";
+
+const getdData = async () => {
+  const data = await prisma.blogPost.findMany({
+    select: {
+      title: true,
+      content: true,
+      imageUrl: true,
+      authorImage: true,
+      authorName: true,
+      id: true,
+      createdAt: true,
+    },
+  });
+
+  return data;
+};
+
+export default async function Home() {
+  const data = await getdData();
+
   return (
     <div className="py-6 ">
       <h1 className="text-3xl font-bold tracking-tighter mb-8 ">
         Lastest Post
       </h1>
-      <div></div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        {data.map((item) => (
+          <h1 key={item.title}> {item.title} </h1>
+        ))}
+      </div>
     </div>
   );
 }
